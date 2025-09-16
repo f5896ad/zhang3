@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技术文章展示</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind自定义颜色和字体 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        dark: '#1E293B',
+                        light: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-dark font-sans">
+    <!-- 主要内容区 -->
+    <main class="container mx-auto px-4 py-12">
+        <div class="mb-8">
+            <h2 class="text-2xl md:text-3xl font-bold mb-2">最新文章</h2>
+            <div class="h-1 w-20 bg-primary rounded-full"></div>
+        </div>
+        
+        <!-- 文章卡片容器 -->
+        <div class="articles-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="articles-container">
+            <!-- 文章将通过JavaScript动态加载 -->
+        </div>
+    </main>
+    <script>
+        // 文章数据
+        let articles = JSON.parse(localStorage.getItem('articles')) || [
+            {
+                id: 1,
+                title: '响应式网页设计的最佳实践',
+                author: '张三',
+                content: '在当今多设备环境下，响应式设计已成为网页开发的标准要求。本文将探讨响应式设计的关键原则和最佳实践，包括流体网格、弹性布局、媒体查询的有效使用以及移动优先的设计理念。我们还将分析实际案例，展示如何在不同设备上提供一致且优质的用户体验，同时优化性能和加载速度。',
+                date: '2023-10-15'
+            },
+            {
+                id: 2,
+                title: 'JavaScript ES2022 新特性解析',
+                author: '李四',
+                content: 'ECMAScript 2022 引入了多个令人兴奋的新特性，本文将深入解析这些新特性并提供实用示例。包括类字段声明、私有方法和 getter/setter、顶层 await、at() 方法用于索引、Error 原因属性等。我们将通过具体代码示例展示如何在实际项目中应用这些新特性，以及它们如何帮助我们编写更简洁、更高效的 JavaScript 代码。',
+                date: '2023-10-10'
+            }
+        ];
+
+        // 获取文章容器
+        const articlesContainer = document.getElementById('articles-container');
+
+        // 渲染文章卡片
+        function renderArticles() {
+            articlesContainer.innerHTML = '';
+            
+            if (articles.length === 0) {
+                articlesContainer.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <i class="fa fa-file-text-o text-gray-300 text-5xl mb-4"></i>
+                        <p class="text-gray-500">暂无文章</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            articles.forEach(article => {
+                // 创建文章卡片元素
+                const articleEl = document.createElement('div');
+                articleEl.className = 'bg-white rounded-xl shadow-md overflow-hidden card-hover';
+                articleEl.innerHTML = `
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 bg-blue-100 text-primary text-sm font-medium rounded-full mb-4">
+                            技术文章
+                        </span>
+                        <h3 class="article-title text-xl font-bold mb-3 hover:text-primary transition-colors">
+                            ${article.title}
+                        </h3>
+                        <p class="article-excerpt text-gray-600 mb-4 line-clamp-3">
+                            ${article.content}
+                        </p>
+                        <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                            <div class="flex items-center space-x-2">
+                                <img src="https://picsum.photos/id/${article.id + 20}/40/40" alt="${article.author}的头像" class="w-8 h-8 rounded-full object-cover">
+                                <span class="text-gray-700 text-sm">${article.author}</span>
+                            </div>
+                            <span class="text-gray-500 text-sm flex items-center">
+                                <i class="fa fa-calendar-o mr-1"></i>
+                                ${article.date}
+                            </span>
+                        </div>
+                    </div>
+                `;
+                
+                articlesContainer.appendChild(articleEl);
+            });
+        }
+
+        // 页面加载时渲染文章
+        document.addEventListener('DOMContentLoaded', () => {
+            renderArticles();
+            
+            // 滚动时改变导航栏样式
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('header');
+                if (window.scrollY > 50) {
+                    header.classList.add('py-2');
+                    header.classList.remove('py-4');
+                } else {
+                    header.classList.add('py-4');
+                    header.classList.remove('py-2');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
